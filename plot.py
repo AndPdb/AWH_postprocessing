@@ -111,8 +111,6 @@ class Pullx:
         #Check dimensions
         dimensions = npy_dict[list(npy_dict.keys())[0]].shape
 
-        print(f"{dimensions}")
-
         if dimensions[1] == 1:
             for walker in npy_dict.keys():
                 
@@ -148,6 +146,9 @@ class Pullx:
         npy_dict = self.npy_dict
 
         n_walkers = self.n_walkers
+
+        #Retrieve dimensions
+        dimensions = npy_dict[list(npy_dict.keys())[0]].shape
  
         #for walker in self.walk_dirs:
             
@@ -160,19 +161,38 @@ class Pullx:
         else:
             fig,ax = plt.subplots(2,n_walkers, figsize=(8*n_walkers, 8), sharey=True)
 
-        for i, key in enumerate(npy_dict.keys()):
-            c = next(colors)["color"]
-            ax[i].scatter(npy_dict[key][::100,0],npy_dict[key][::100,1], color=c, label=key)
-            #ax[i].set_ylim((min_y,max_y))
-            #ax[i].set_xlim((min_x,max_x))
-            ax[i].set_xlabel("CV1", fontsize=22)
-            ax[i].legend(fontsize=20)
+        #Check dimensions
+        if dimensions[1] == 1:
 
-        if n_walkers <= 3:
-            ax[0].set_ylabel("CV2", fontsize=22)
+            for i, key in enumerate(npy_dict.keys()):
+                c = next(colors)["color"]
+                
+                ax[i].plot(npy_dict[key][::100,0], color=c, label=key)
+                #ax[i].set_ylim((min_y,max_y))
+                #ax[i].set_xlim((min_x,max_x))
+                ax[i].set_xlabel("CV1", fontsize=22)
+                ax[i].legend(fontsize=20)
+
+        elif dimensions[1] == 2:
+            
+            for i, key in enumerate(npy_dict.keys()):
+                c = next(colors)["color"]
+                
+                ax[i].scatter(npy_dict[key][::100,0],npy_dict[key][::100,1], color=c, label=key)
+                #ax[i].set_ylim((min_y,max_y))
+                #ax[i].set_xlim((min_x,max_x))
+                ax[i].set_xlabel("CV1", fontsize=22)
+                ax[i].legend(fontsize=20)
+
+            if n_walkers <= 3:
+                ax[0].set_ylabel("CV2", fontsize=22)
+            else:
+                ax[0].set_ylabel("CV2", fontsize=22)
+                ax[4].set_ylabel("CV2", fontsize=22)  
+
         else:
-            ax[0].set_ylabel("CV2", fontsize=22)
-            ax[4].set_ylabel("CV2", fontsize=22)    
+            print("Plot not possible for dimensions > 2")
+
 
         plt.suptitle('Walkers Pullx', fontsize=24)
         fig.tight_layout()
