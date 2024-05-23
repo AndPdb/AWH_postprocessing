@@ -19,7 +19,7 @@ plot_pullx        = False
 plot_PMF          = False
 SUFFIX            = "walker"
 #awh_xvg           = "test/1D/walker_1/awh_data/awh_t183300.xvg"
-awh_xvg           = "test/2D/walker_1/awh_data/awh_t183300.xvg"
+awh_xvg           = "walker_1/awh_data/awh_t183300.xvg"
 
 
 class Pullx:
@@ -111,11 +111,13 @@ class Pullx:
 
         #Check dimensions
         dimensions = npy_dict[list(npy_dict.keys())[0]].shape
+        
+        print("Dimension is {len(dimensions)}")
 
-        if dimensions[1] == 1:
+        if len(dimensions) == 1: #This is because it's a 1D array
             for walker in npy_dict.keys():
                 
-                plt.plot(npy_dict[walker][:-1, 0],
+                plt.plot(npy_dict[walker][:-1],
                             label=walker, alpha=0.5)
                 
                 plt.legend()
@@ -150,6 +152,7 @@ class Pullx:
 
         #Retrieve dimensions
         dimensions = npy_dict[list(npy_dict.keys())[0]].shape
+
  
         #for walker in self.walk_dirs:
             
@@ -163,12 +166,12 @@ class Pullx:
             fig,ax = plt.subplots(2,n_walkers, figsize=(8*n_walkers, 8), sharey=True)
 
         #Check dimensions
-        if dimensions[1] == 1:
+        if len(dimensions) == 1:
 
             for i, key in enumerate(npy_dict.keys()):
                 c = next(colors)["color"]
                 
-                ax[i].plot(npy_dict[key][::100,0], color=c, label=key)
+                ax[i].plot(npy_dict[key][::100], color=c, label=key)
                 #ax[i].set_ylim((min_y,max_y))
                 #ax[i].set_xlim((min_x,max_x))
                 ax[i].set_xlabel("CV1", fontsize=22)
@@ -198,8 +201,25 @@ class Pullx:
         plt.suptitle('Walkers Pullx', fontsize=24)
         fig.tight_layout()
         plt.savefig(os.path.join(sim_dir,'Pullx_split.png'), dpi=300, facecolor='white')
+      
 
-            
+
+if __name__ == "__main__":
+
+    pullx = Pullx(WORKING_DIR, SUFFIX)
+
+    print(pullx.walk_dirs, pullx.xvg_dict)
+    
+    try:
+        pullx.load_npy()
+    except FileNotFoundError:
+        pullx.create_npy()
+        pullx.load_npy()
+    
+    pullx.one_plot()
+    pullx.split_plots()
+
+
 #Plot AWH edr data
 if plot_PMF:
     data = np.loadtxt(os.path.join(WORKING_DIR,awh_xvg), comments=['@','#'])
@@ -217,11 +237,11 @@ if plot_PMF:
 
             if n == 0:
                 Z = copy.deepcopy(data[:,n+2].reshape(X.shape[0],Y.shape[0]))
-                Z[np.where(Z > 200)] = np.nan
-                Z[np.where(Z == 0)] = np.nan
+                #Z[np.where(Z > 200)] = np.nan
+                #Z[np.where(Z == 0)] = np.nan
             else:
                 Z = copy.deepcopy(data[:,n+2].reshape(X.shape[0],Y.shape[0]))
-                Z[np.where(Z == 0)] = np.nan
+                #Z[np.where(Z == 0)] = np.nan
 
             if n <= 1:
                 levels_c= 10
@@ -252,20 +272,3 @@ if plot_PMF:
     plt.savefig(os.path.join(WORKING_DIR,"AWH_data.png"))
 
     plt.close(fig)
-
-if __name__ == "__main__":
-
-    pullx = Pullx(WORKING_DIR, SUFFIX)
-
-    print(pullx.walk_dirs, pullx.xvg_dict)
-    
-    try:
-        pullx.load_npy()
-    except FileNotFoundError:
-        pullx.create_npy()
-        pullx.load_npy()
-    
-    pullx.one_plot()
-    pullx.split_plots()
-
-
