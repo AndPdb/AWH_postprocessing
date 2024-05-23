@@ -111,10 +111,10 @@ class Pullx:
         n_walkers = self.n_walkers
 
  
-        for walker in self.walk_dirs:
+        #for walker in self.walk_dirs:
             
-            max_x, min_x = max(npy_dict[walker][:-1:100, 0]), min(npy_dict[walker][:-1:100, 0])
-            max_y, min_y = max(npy_dict[walker][:-1:100, 1]), min(npy_dict[walker][:-1:100, 1])
+        #    max_x, min_x = max(npy_dict[walker][:-1:100, 0]), min(npy_dict[walker][:-1:100, 0])
+        #    max_y, min_y = max(npy_dict[walker][:-1:100, 1]), min(npy_dict[walker][:-1:100, 1])
 
 
 
@@ -142,7 +142,7 @@ class Pullx:
         plt.savefig('Pullx_split.png', dpi=300, facecolor='white')
 
             
-
+""" 
 if plot_pullx:
     data = {}
     walkers = [ x for x in os.listdir(WORKING_DIR) if x.startswith('walker') ]
@@ -162,7 +162,6 @@ if plot_pullx:
     plt.legend()
     plt.title('Pullx')
     plt.savefig('Pullx.png', dpi=300, facecolor='white')
-
 
 
     #Plot each walker separately
@@ -191,6 +190,8 @@ if plot_pullx:
     plt.suptitle('Walkers Pullx', fontsize=24)
     fig.tight_layout()
     plt.savefig('Pullx_split.png', dpi=300, facecolor='white')
+     """
+
 
 #Plot AWH edr data
 if plot_PMF:
