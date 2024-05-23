@@ -2,7 +2,7 @@ import os
 import numpy as np
 from multiprocessing import Process
 
-WORKING_DIR = "."
+WORKING_DIR = "test/2D"
 
 #Parallelize one walker per each core
 def runInParallel(walkers):
@@ -33,6 +33,6 @@ def concat_xvg(directory):
 
 #Main program
 if __name__ == '__main__':
-  walkers = [ x for x in os.listdir(WORKING_DIR) if x.startswith('walker') ]
+  walkers = [ os.path.join(WORKING_DIR, x) for x in os.listdir(WORKING_DIR) if x.startswith('walker') ]
   print(f"Reading and compressing pullx for {walkers}")
   runInParallel(walkers)

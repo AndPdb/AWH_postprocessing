@@ -14,11 +14,12 @@ plt.rcParams['ytick.labelsize'] = 20
 plt.rcParams['figure.dpi'] = 300
 colors = plt.rcParams["axes.prop_cycle"]()
 
-WORKING_DIR       = "."
+WORKING_DIR       = "test/2D"
 plot_pullx        = False
 plot_PMF          = False
 SUFFIX            = "walker"
-awh_xvg           = "walker_1/awh_data/awh_t183300.xvg"
+#awh_xvg           = "test/1D/walker_1/awh_data/awh_t183300.xvg"
+awh_xvg           = "test/2D/walker_1/awh_data/awh_t183300.xvg"
 
 
 class Pullx:
@@ -105,7 +106,7 @@ class Pullx:
 
     def one_plot(self):
         #Plot the walkers distributions togheter. Up to two dimensions
-
+        sim_dir = self.sim_dir
         npy_dict = self.npy_dict
 
         #Check dimensions
@@ -121,7 +122,7 @@ class Pullx:
 
                 plt.title('Pullx')
 
-                plt.savefig('Pullx.png', dpi=300, facecolor='white')
+                plt.savefig(os.path.join(sim_dir, 'Pullx.png'), dpi=300, facecolor='white')
 
         elif dimensions[1] == 2:
             for walker in npy_dict.keys():
@@ -133,7 +134,7 @@ class Pullx:
 
                 plt.title('Pullx')
 
-                plt.savefig('Pullx.png', dpi=300, facecolor='white')
+                plt.savefig(os.path.join(sim_dir, 'Pullx.png'), dpi=300, facecolor='white')
 
         else:
             print("Plot not possible for dimensions > 2")
@@ -142,7 +143,7 @@ class Pullx:
 
     def split_plots(self):
         #Plot each walker separately. 2D case.
-
+        sim_dir = self.sim_dir
         npy_dict = self.npy_dict
 
         n_walkers = self.n_walkers
@@ -196,7 +197,7 @@ class Pullx:
 
         plt.suptitle('Walkers Pullx', fontsize=24)
         fig.tight_layout()
-        plt.savefig('Pullx_split.png', dpi=300, facecolor='white')
+        plt.savefig(os.path.join(sim_dir,'Pullx_split.png'), dpi=300, facecolor='white')
 
             
 #Plot AWH edr data
