@@ -14,7 +14,7 @@ plt.rcParams['ytick.labelsize'] = 20
 plt.rcParams['figure.dpi'] = 300
 colors = plt.rcParams["axes.prop_cycle"]()
 
-WORKING_DIR       = "test/2D"
+WORKING_DIR       = "test/1D"
 plot_pullx        = False
 plot_PMF          = False
 SUFFIX            = "walker"

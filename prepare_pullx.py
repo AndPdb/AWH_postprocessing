@@ -2,7 +2,7 @@ import os
 import numpy as np
 from multiprocessing import Process
 
-WORKING_DIR = "test/2D"
+WORKING_DIR = "test/1D"
 
 #Parallelize one walker per each core
 def runInParallel(walkers):
