@@ -65,14 +65,19 @@ class Pullx:
 
     def concat_xvg(self, walker):
         """Read, concatenate and compress pullx.xvg files"""
+
         sim_dir = self.sim_dir
+
         self.get_xvgdict()
+
         xvg_dict = self.xvg_dict
 
         xvglist = []
 
         for xvg in xvg_dict[walker]:
+
             path_xvg = os.path.join(sim_dir, walker, xvg)
+
             xvglist.append(np.loadtxt(path_xvg, comments=['#','@'], usecols=[-2, -1]))
         
         np.save(os.path.join(sim_dir, walker,f"pullx_{len(xvglist)}.npy"),
@@ -86,40 +91,72 @@ class Pullx:
         proc = []
 
         for walker in self.walk_dirs:
+
             p = Process(target=self.concat_xvg, args=(walker,))
+
             p.start()
+
             proc.append(p)
 
         for p in proc:
+
             p.join()
      
 
     def one_plot(self):
-        #Plot the walkers distributions togheter
+        #Plot the walkers distributions togheter. Up to two dimensions
+
         npy_dict = self.npy_dict
-        for walker in npy_dict.keys():
-            plt.scatter(npy_dict[walker][:-1, 0], npy_dict[walker][:-1, 1],
-                         label=walker, alpha=0.5)
-            plt.legend()
-            plt.title('Pullx')
-            plt.savefig('Pullx.png', dpi=300, facecolor='white')
+
+        #Check dimensions
+        dimensions = npy_dict[list(npy_dict.keys())[0]].shape
+
+        print(f"{dimensions}")
+
+        if dimensions[1] == 1:
+            for walker in npy_dict.keys():
+                
+                plt.plot(npy_dict[walker][:-1, 0],
+                            label=walker, alpha=0.5)
+                
+                plt.legend()
+
+                plt.title('Pullx')
+
+                plt.savefig('Pullx.png', dpi=300, facecolor='white')
+
+        elif dimensions[1] == 2:
+            for walker in npy_dict.keys():
+                
+                plt.scatter(npy_dict[walker][:-1, 0], npy_dict[walker][:-1, 1],
+                            label=walker, alpha=0.5)
+                
+                plt.legend()
+
+                plt.title('Pullx')
+
+                plt.savefig('Pullx.png', dpi=300, facecolor='white')
+
+        else:
+            print("Plot not possible for dimensions > 2")
+
 
 
     def split_plots(self):
         #Plot each walker separately. 2D case.
-        npy_dict = self.npy_dict
-        n_walkers = self.n_walkers
 
+        npy_dict = self.npy_dict
+
+        n_walkers = self.n_walkers
  
         #for walker in self.walk_dirs:
             
         #    max_x, min_x = max(npy_dict[walker][:-1:100, 0]), min(npy_dict[walker][:-1:100, 0])
         #    max_y, min_y = max(npy_dict[walker][:-1:100, 1]), min(npy_dict[walker][:-1:100, 1])
 
-
-
         if n_walkers <= 3:
             fig,ax = plt.subplots(1,n_walkers, figsize=(8*n_walkers, 8), sharey=True)
+
         else:
             fig,ax = plt.subplots(2,n_walkers, figsize=(8*n_walkers, 8), sharey=True)
 
@@ -142,57 +179,6 @@ class Pullx:
         plt.savefig('Pullx_split.png', dpi=300, facecolor='white')
 
             
-""" 
-if plot_pullx:
-    data = {}
-    walkers = [ x for x in os.listdir(WORKING_DIR) if x.startswith('walker') ]
-    #Check if pullx.npy present and up-to-date
-    for walker in walkers:
-        WALKER_DIR = os.path.join(WORKING_DIR,walker)
-        pullxs = [ x for x in os.listdir(WALKER_DIR) if x.endswith('pullx.xvg') ]
-        npy = os.path.join(WORKING_DIR,walker,f"pullx_{len(pullxs)}.npy")
-        if os.path.isfile(npy):
-            data[walker] = np.load(npy)
-        else:
-            print(f"Warning {npy} does not seem up-to-date")
-
-    #Plot the walkers distributions
-    for walker in data.keys():
-        plt.scatter(data[walker][:-1, 0], data[walker][:-1, 1], label=walker, alpha=0.5)
-    plt.legend()
-    plt.title('Pullx')
-    plt.savefig('Pullx.png', dpi=300, facecolor='white')
-
-
-    #Plot each walker separately
-    max_x, min_x = max(data[walker][:-1:100, 0]), min(data[walker][:-1:100, 0])
-    max_y, min_y = max(data[walker][:-1:100, 1]), min(data[walker][:-1:100, 1])
-
-    if len(walkers) <= 3:
-        fig,ax = plt.subplots(1,len(walkers), figsize=(8*len(walkers), 8), sharey=True)
-    else:
-        fig,ax = plt.subplots(2,len(walkers), figsize=(8*len(walkers), 8), sharey=True)
-
-    for i, key in enumerate(data.keys()):
-        c = next(colors)["color"]
-        ax[i].scatter(data[key][::100,0],data[key][::100,1], color=c, label=key)
-        ax[i].set_ylim((min_y,max_y))
-        ax[i].set_xlim((min_x,max_x))
-        ax[i].set_xlabel("CV1", fontsize=22)
-        ax[i].legend(fontsize=20)
-
-    if len(walkers) <= 3:
-        ax[0].set_ylabel("CV2", fontsize=22)
-    else:
-        ax[0].set_ylabel("CV2", fontsize=22)
-        ax[4].set_ylabel("CV2", fontsize=22)    
-
-    plt.suptitle('Walkers Pullx', fontsize=24)
-    fig.tight_layout()
-    plt.savefig('Pullx_split.png', dpi=300, facecolor='white')
-     """
-
-
 #Plot AWH edr data
 if plot_PMF:
     data = np.loadtxt(os.path.join(WORKING_DIR,awh_xvg), comments=['@','#'])
